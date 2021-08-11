@@ -8,8 +8,8 @@ import (
 	"log"
 	"time"
 
-	"github.com/mdlayher/apcupsd"
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/tvoyle/apcupsd"
 )
 
 // TODO(mdlayher): rework this with metricslite.

@@ -4,8 +4,8 @@ import (
 	"log"
 	"time"
 
-	"github.com/mdlayher/apcupsd"
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/tvoyle/apcupsd"
 )
 
 var _ StatusSource = &apcupsd.Client{}
