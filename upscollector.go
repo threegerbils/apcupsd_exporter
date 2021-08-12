@@ -34,8 +34,10 @@ type UPSCollector struct {
 	LastTransferOffBatteryTimeSeconds   *prometheus.Desc
 	LastSelftestTimeSeconds             *prometheus.Desc
 	NominalPowerWatts                   *prometheus.Desc
-
-	ss StatusSource
+	OutputVolts                         *prometheus.Desc
+	OutputNominalVolts                  *prometheus.Desc
+	LineFrequencyHertz                  *prometheus.Desc
+	ss                                  StatusSource
 }
 
 var _ prometheus.Collector = &UPSCollector{}
@@ -150,6 +152,27 @@ func NewUPSCollector(ss StatusSource) *UPSCollector {
 			nil,
 		),
 
+		OutputVolts: prometheus.NewDesc(
+			prometheus.BuildFQName(namespace, "", "output_volts"),
+			"UPS output in volts",
+			labels,
+			nil,
+		),
+
+		OutputNominalVolts: prometheus.NewDesc(
+			prometheus.BuildFQName(namespace, "", "output_nominal_volts"),
+			"Nominal UPS output in volts",
+			labels,
+			nil,
+		),
+
+		LineFrequencyHertz: prometheus.NewDesc(
+			prometheus.BuildFQName(namespace, "", "line_frequency_hertz"),
+			"Line frequency in hertz",
+			labels,
+			nil,
+		),
+
 		ss: ss,
 	}
 }
@@ -173,6 +196,9 @@ func (c *UPSCollector) Describe(ch chan<- *prometheus.Desc) {
 		c.LastTransferOffBatteryTimeSeconds,
 		c.LastSelftestTimeSeconds,
 		c.NominalPowerWatts,
+		c.OutputVolts,
+		c.OutputNominalVolts,
+		c.LineFrequencyHertz,
 	}
 
 	for _, d := range ds {
@@ -292,6 +318,27 @@ func (c *UPSCollector) Collect(ch chan<- prometheus.Metric) {
 		c.NominalPowerWatts,
 		prometheus.GaugeValue,
 		float64(s.NominalPower),
+		s.UPSName,
+	)
+
+	ch <- prometheus.MustNewConstMetric(
+		c.OutputVolts,
+		prometheus.GaugeValue,
+		float64(s.OutputVoltage),
+		s.UPSName,
+	)
+
+	ch <- prometheus.MustNewConstMetric(
+		c.OutputNominalVolts,
+		prometheus.GaugeValue,
+		float64(s.NominalOutputVoltage),
+		s.UPSName,
+	)
+
+	ch <- prometheus.MustNewConstMetric(
+		c.LineFrequencyHertz,
+		prometheus.GaugeValue,
+		float64(s.LineFrequency),
 		s.UPSName,
 	)
 }
