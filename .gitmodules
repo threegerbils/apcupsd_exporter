@@ -1,6 +1,0 @@
-[submodule "apcupsd_exporter"]
-	path = apcupsd_exporter
-	url = https://github.com/tvoyle/apcupsd_exporter.git
-[submodule "alertmanager2hangoutschat"]
-	path = alertmanager2hangoutschat
-	url = https://github.com/Pix4D/alertmanager2hangoutschat.git
